@@ -1,9 +1,8 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import foodProductsJson from '../data/foodproducts.json';
-import { FoodProducts } from '../models/FoodProducts';
+import { findFoodProducts } from '../utils/findFoodProducts';
 
 export default function Home({ navigation }: { navigation: any }) {
-  const foodProducts = foodProductsJson as FoodProducts;
+  const foodProducts = findFoodProducts();
 
   return (
     <View style={styles.container}>
