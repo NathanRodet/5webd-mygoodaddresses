@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { firebaseApp } from '../utils/firebase';
+import { firebaseApp } from '../firebase/firebase';
 
-const Login = () => {
+const Login = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -12,6 +12,7 @@ const Login = () => {
       const auth = getAuth(firebaseApp);
       await signInWithEmailAndPassword(auth, email, password);
       // Login successful, navigate to the next screen
+      console.log('User logged in successfully!');
     } catch (error) {
       console.error('Error login user:', error);
     }
@@ -36,7 +37,7 @@ const Login = () => {
       />
       <Button title="Se connecter" onPress={handleLogin} />
       <Text style={styles.subtitle}>Pas encore de compte ?</Text>
-      <Button title="Créer un compte" onPress={() => { }} />
+      <Button title="Créer mon compte" onPress={() => navigation.navigate('Register')} />
     </View>
   );
 };

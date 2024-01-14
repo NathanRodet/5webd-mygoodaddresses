@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native'; // Import the Text component
+import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native'; // Import the Text component
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { firebaseApp } from '../utils/firebase';
+import { firebaseApp } from '../firebase/firebase';
 
-const Register = () => {
+const Register = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -11,16 +11,20 @@ const Register = () => {
     try {
       const auth = getAuth(firebaseApp);
       await createUserWithEmailAndPassword(auth, email, password);
+      // Registration successful, navigate to the next screen
       console.log('User registered successfully!');
+      Alert.alert('Compte enregistré', 'Vous allez être redirigé vers la page de connexion.', [{ text: 'Se connecter', onPress: () => navigation.navigate('Login'), style: 'default' }]);
     } catch (error) {
       console.error('Error registering user:', error);
     }
   };
 
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenue sur MesBonnesAdresses !</Text>
-      <Text style={styles.subtitle}>Merci de vous authentifier pour accéder à votre compte.</Text>
+      <Text style={styles.subtitle}>Remplissez les champs ci-dessous pour créer votre compte.</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -35,6 +39,8 @@ const Register = () => {
         onChangeText={setPassword}
       />
       <Button title="Créer mon compte" onPress={handleRegister} />
+      <Text style={styles.subtitle}>Déjà un compte ?</Text>
+      <Button title="Se connecter" onPress={() => navigation.navigate('Login')} />
     </View>
   );
 };
