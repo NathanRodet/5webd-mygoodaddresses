@@ -19,8 +19,6 @@ const Register = ({ navigation }: { navigation: any }) => {
     }
   };
 
-
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenue sur MesBonnesAdresses !</Text>

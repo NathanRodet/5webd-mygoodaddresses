@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { firebaseApp } from '../firebase/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { firebaseAuth } from '../firebase/firebase';
 
 const Login = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState<string>('');
@@ -9,8 +9,7 @@ const Login = ({ navigation }: { navigation: any }) => {
 
   const handleLogin = async () => {
     try {
-      const auth = getAuth(firebaseApp);
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(firebaseAuth, email, password);
       // Login successful, navigate to the next screen
       console.log('User logged in successfully!');
     } catch (error) {

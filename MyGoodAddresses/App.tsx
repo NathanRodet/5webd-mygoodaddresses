@@ -3,13 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login';
 import Register from './screens/Register';
+import { firebaseAuth } from './firebase/firebase';
 
 // App.tsx is used as the entry point of the application.
 export default function App() {
+  const currentUser = firebaseAuth.currentUser;
 
   // Create a StackNavigator object.
   const Stack = createNativeStackNavigator();
-
   const stackOptions = {
     headerShown: false
   }
