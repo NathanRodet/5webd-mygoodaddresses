@@ -18,4 +18,4 @@ type FirebaseConfigType = {
 const firebaseConfig: FirebaseConfigType = fireBaseConfig as FirebaseConfigType;
 
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
