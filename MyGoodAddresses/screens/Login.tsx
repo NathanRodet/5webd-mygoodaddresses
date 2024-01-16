@@ -8,13 +8,7 @@ const Login = ({ navigation }: { navigation: any }) => {
   const [password, setPassword] = useState<string>('');
 
   const handleLogin = async () => {
-    try {
-      await signInWithEmailAndPassword(firebaseAuth, email, password);
-      // Login successful, navigate to the next screen
-      console.log('User logged in successfully!');
-    } catch (error) {
-      console.error('Error login user:', error);
-    }
+    loginFirebase(email, password);
   };
 
   return (
