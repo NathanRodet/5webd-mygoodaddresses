@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native'; // Import the Text component
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { firebaseApp } from '../firebase/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { firebaseAuth } from '../firebase';
+
+async function firebaseRegister(email: string, password: string, navigation: any) {
+  try {
+    await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    // Registration successful, navigate to the next screen
+    console.log('User registered successfully!');
+  } catch (error) {
+    console.error('Error registering user:', error);
+  }
+}
 
 const Register = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async () => {
-    try {
-      const auth = getAuth(firebaseApp);
-      await createUserWithEmailAndPassword(auth, email, password);
-      // Registration successful, navigate to the next screen
-      console.log('User registered successfully!');
-      Alert.alert('Compte enregistré', 'Vous allez être redirigé vers la page de connexion.', [{ text: 'Se connecter', onPress: () => navigation.navigate('Login'), style: 'default' }]);
-    } catch (error) {
-      console.error('Error registering user:', error);
-    }
+    await firebaseRegister(email, password, navigation);
   };
 
   return (

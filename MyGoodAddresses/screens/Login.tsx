@@ -1,14 +1,23 @@
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { firebaseAuth } from '../firebase/firebase';
+import { firebaseAuth } from '../firebase';
+
+async function firebaseLogin(email: string, password: string) {
+  try {
+    await signInWithEmailAndPassword(firebaseAuth, email, password);
+    console.log('User logged in successfully!');
+  } catch (error) {
+    console.error('Error login user:', error);
+  }
+}
 
 const Login = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleLogin = async () => {
-    loginFirebase(email, password);
+    await firebaseLogin(email, password);
   };
 
   return (
