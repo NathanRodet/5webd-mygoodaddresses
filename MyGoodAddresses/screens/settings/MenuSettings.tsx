@@ -1,4 +1,4 @@
-import { signOut } from 'firebase/auth';
+import { signOut, deleteUser } from 'firebase/auth';
 import React, { useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { firebaseAuth } from '../../firebase';
@@ -14,10 +14,20 @@ async function functionSignOut() {
 }
 
 const SettingsMenu = ({ navigation }: { navigation: any }) => {
-  const currentUser = useContext(AuthContext);
+  const currentUser = firebaseAuth.currentUser;
 
   const handleLogout = async () => {
     await functionSignOut();
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      if (currentUser)
+        await deleteUser(currentUser);
+      console.log('User deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
   };
 
   return (
@@ -59,7 +69,7 @@ const SettingsMenu = ({ navigation }: { navigation: any }) => {
         </>
       }
       <View style={styles.bottomContainer}>
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleLogout}>
+        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDeleteAccount}>
           <Text style={styles.buttonText}>Supprimer le compte</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
