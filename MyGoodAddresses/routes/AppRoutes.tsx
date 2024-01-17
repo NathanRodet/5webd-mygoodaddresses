@@ -7,6 +7,7 @@ import Register from '../screens/Register';
 import { AuthContext } from "../auth/AuthProvider";
 import Home from "../screens/tab/Home";
 import MenuSettings from "../screens/settings/MenuSettings";
+import AvatarSelection from "../screens/settings/AvatarSelection";
 
 export default function AppRoutes() {
 
@@ -23,6 +24,7 @@ export default function AppRoutes() {
           <Stack.Navigator initialRouteName={"MesBonnesAddresses"} screenOptions={loggedScreenOptions}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="MenuSettings" component={MenuSettings} />
+            <Stack.Screen name="AvatarSelection" component={AvatarSelection} />
           </Stack.Navigator>
         ) : (
           <Stack.Navigator screenOptions={{ headerShown: false }} >

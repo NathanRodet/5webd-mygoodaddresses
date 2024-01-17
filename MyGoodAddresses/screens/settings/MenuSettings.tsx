@@ -13,7 +13,6 @@ async function functionSignOut() {
   }
 }
 
-
 const SettingsMenu = ({ navigation }: { navigation: any }) => {
   const currentUser = useContext(AuthContext);
 
@@ -33,7 +32,8 @@ const SettingsMenu = ({ navigation }: { navigation: any }) => {
             <Text style={styles.buttonTextTitle}>{"Email"}</Text>
             <Text style={styles.buttonText}>{currentUser?.email}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
+
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AvatarSelection')} >
             <Text style={styles.buttonText}>{"Modifier l'avatar"}</Text>
           </TouchableOpacity>
 
