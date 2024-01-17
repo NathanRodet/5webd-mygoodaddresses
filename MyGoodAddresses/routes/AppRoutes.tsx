@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { loggedScreenOptions } from "../screens/components/LoggedHeaderBar";
 import Login from '../screens/Login';
 import Register from '../screens/Register';
 import { AuthContext } from "../auth/AuthProvider";
-import Home from "../screens/Home";
-import { loggedScreenOptions } from "../screens/components/LoggedHeaderBar";
+import Home from "../screens/tab/Home";
+import MenuSettings from "../screens/settings/MenuSettings";
 
 export default function AppRoutes() {
 
@@ -15,14 +16,13 @@ export default function AppRoutes() {
   // Get the current user from the AuthContext.
   const currentUser = useContext(AuthContext);
 
-
-
   return (
     <NavigationContainer>
       {
         (currentUser) ? (
-          <Stack.Navigator screenOptions={loggedScreenOptions}>
+          <Stack.Navigator initialRouteName={"MesBonnesAddresses"} screenOptions={loggedScreenOptions}>
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="MenuSettings" component={MenuSettings} />
           </Stack.Navigator>
         ) : (
           <Stack.Navigator screenOptions={{ headerShown: false }} >
@@ -31,7 +31,6 @@ export default function AppRoutes() {
           </Stack.Navigator>
         )
       }
-
     </NavigationContainer >
   );
 }

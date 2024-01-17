@@ -20,3 +20,5 @@ export const avatars: Avatar[] = [
     url: "https://gravatar.com/avatar/d521fdb5217394995d95a308e8a824ea?s=400&d=robohash&r=x"
   }
 ]
+
+export const defaultAvatar = avatars[0];

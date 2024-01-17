@@ -1,51 +1,30 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native';
-import { signOut } from 'firebase/auth';
-import { firebaseAuth } from '../../firebase';
+import { AuthContext } from '../../auth/AuthProvider';
+import { defaultAvatar } from '../../data/avatars';
+
 
 export const loggedScreenOptions = {
   headerShown: true,
-  headerTitle: () => <Text style={styles.headerTitle}>Mes Bonnes Adresses</Text>,
+  headerTitle: () => <Text style={styles.headerTitle}>{"MesBonnesAddresses"}</Text>,
   headerRight: () => (
     <LoggedHeaderBar />
   ),
 }
 
-async function functionSignOut() {
-  try {
-    await signOut(firebaseAuth);
-    console.log('User signed Out successfully!');
-  } catch (error) {
-    console.error('Error logging out user:', error);
-  }
-}
-
 const LoggedHeaderBar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleLogout = async () => {
-    await functionSignOut();
-  };
-
-  const handleMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const navigation = useNavigation();
+  const currentUser = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleMenuToggle}>
+      <TouchableOpacity onPress={() => navigation.navigate('MenuSettings')}>
         <Image
-          source={{ uri: 'https://www.gravatar.com/avatar/94d093eda664addd6e450d7e9881bcad?s=200&d=identicon&r=PG' }}
+          source={{ uri: currentUser?.photoURL ? currentUser?.photoURL : defaultAvatar.url }}
           style={styles.profileIcon}
         />
       </TouchableOpacity>
-      {isMenuOpen && (
-        <View style={styles.menu}>
-          <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
-            <Text style={styles.menuText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 };
