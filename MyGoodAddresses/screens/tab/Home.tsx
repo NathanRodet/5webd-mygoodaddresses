@@ -3,7 +3,6 @@ import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
-
 import { getDatabase, ref, child, get } from "firebase/database";
 import { Address } from "../../models/adresses"
 
@@ -11,7 +10,6 @@ import { Address } from "../../models/adresses"
 const Home = () => {
   const navigation = useNavigation();
   const currentUser = useContext(AuthContext);
-
   const [data, setData] = useState<Address[]>([]);
   const userId = currentUser?.uid;
   const dbRef = ref(getDatabase());
@@ -47,8 +45,6 @@ const Home = () => {
       />
       {/* @ts-ignore */}
       <Button title="Ajouter une adresse" onPress={() => navigation.navigate('CreateAddress')} />
-        {/* @ts-ignore */}
-      <Button title="Ouvrir la carte" onPress={() => navigation.navigate('map')} />
     </div>
   );
 }
