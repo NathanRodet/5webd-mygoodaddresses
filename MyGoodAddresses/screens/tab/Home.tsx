@@ -1,40 +1,83 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
+import { getDatabase, ref, child, get } from "firebase/database";
+import { Address } from "../../models/adresses"
+
 
 const Home = () => {
+  const navigation = useNavigation();
   const currentUser = useContext(AuthContext);
+  const [data, setData] = useState<Address[]>([]);
+  const userId = currentUser?.uid;
+  const dbRef = ref(getDatabase());
 
-  const randomGreeting = () => {
-    const greetings = ['Welcome', 'Hello', 'Hi', 'Greetings'];
-    const randomIndex = Math.floor(Math.random() * greetings.length);
-    return greetings[randomIndex];
-  };
+  useEffect(() => {
+    get(child(dbRef, `addresses/${userId}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setData(Object.values(snapshot.val()));
+      } else {
+        console.log("Aucune addresse existante");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }, [userId]);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{randomGreeting()}</Text>
-      <Text style={styles.subtitle}>{currentUser?.email}</Text>
-      <Text style={styles.subtitle}>This is a random landing page!</Text>
-      <Button title="Get Started" onPress={() => console.log('Button pressed!')} />
-    </View>
+  const renderItem = ({ item }: { item: Address }) => (
+    <TouchableOpacity
+      //@ts-ignore
+      onPress={() => navigation.navigate('Map', { id: item.id })}
+      style={styles.itemContainer}
+    >
+      <Text style={styles.itemName}>{item.city}</Text>
+      <Text style={styles.itemDescription}>{item.description}</Text>
+    </TouchableOpacity>
   );
-};
-
+  return (
+    <div style={styles.container}>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.name}
+      />
+      {/* @ts-ignore */}
+      <Button title="Ajouter une adresse" onPress={() => navigation.navigate('CreateAddress')} />
+    </div>
+  );
+}
 const styles = StyleSheet.create({
   container: {
+    display : "flex",
     flex: 1,
-    justifyContent: 'center',
+    width :'100%',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16,
   },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 24,
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: '80%',
+  },
+  itemContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    width : '100%',
+    borderBottomColor: '#ddd',
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemDescription: {
+    fontSize: 14,
+    color: 'gray',
   },
 });
 
