@@ -19,6 +19,7 @@ const LoggedHeaderBar = () => {
 
   return (
     <View style={styles.container}>
+      {/* @ts-ignore */}
       <TouchableOpacity onPress={() => navigation.navigate('MenuSettings')}>
         <Image
           source={{ uri: currentUser?.photoURL ? currentUser?.photoURL : defaultAvatar.url }}
