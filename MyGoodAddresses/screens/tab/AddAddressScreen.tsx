@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, Button, Image, StyleSheet, Platform, Alert } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { firebaseAuth, firebaseDb } from '../../firebase';
+import { firebaseDb } from '../../firebase';
 import { push, ref, set } from 'firebase/database';
+import { AuthContext } from '../../auth/AuthProvider';
 
 const AddAddressScreen = () => {
     
@@ -13,30 +14,30 @@ const AddAddressScreen = () => {
     const [isPrivate, setIsPrivate] = useState(true);
 
     const handleChooseImage = async () => {
-        let permissionResult;
+        // let permissionResult;
 
-        if (Platform.OS === 'android') {
-            permissionResult = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-        }
+        // if (Platform.OS === 'android') {
+        //     permissionResult = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+        // }
 
-        if (permissionResult === RESULTS.GRANTED) {
-            launchImageLibrary({ noData: true }, response => {
-                if (response.didCancel) {
-                    console.log('L\'utilisateur a annulé la sélection d\'image');
-                } else if (response.errorCode) {
-                    console.log('ImagePicker Error: ', response.errorMessage);
-                } else if (response.assets) {
-                    setImageUri(response.assets[0].uri);
-                }
-            });
-        } else {
-            Alert.alert("Permission refusée", "Vous n'avez pas donné la permission pour accéder à la galerie.");
-        }
+        // if (permissionResult === RESULTS.GRANTED) {
+        //     launchImageLibrary({ noData: true }, response => {
+        //         if (response.didCancel) {
+        //             console.log('L\'utilisateur a annulé la sélection d\'image');
+        //         } else if (response.errorCode) {
+        //             console.log('ImagePicker Error: ', response.errorMessage);
+        //         } else if (response.assets) {
+        //             setImageUri(response.assets[0].uri);
+        //         }
+        //     });
+        // } else {
+        //     Alert.alert("Permission refusée", "Vous n'avez pas donné la permission pour accéder à la galerie.");
+        // }
     };
 
     const handleSave = async () => {
 
-        const user = firebaseAuth.currentUser;
+        const user = useContext(AuthContext)
         if (!user) {
             console.log('Aucun utilisateur connecté');
             return;
@@ -51,7 +52,7 @@ const AddAddressScreen = () => {
                 address: address,
                 isPrivate: isPrivate,
                 userId: user.uid,
-                image: imageUri
+                // image: imageUri
             };
 
             await set(newAddressRef, newAddress);
@@ -77,17 +78,17 @@ const AddAddressScreen = () => {
                 style={styles.input} 
             />
 
-            <Button 
+            {/* <Button 
                 title="Choisir une image" 
                 onPress={handleChooseImage} 
-            />
+            /> */}
 
-            {imageUri ? (
+            {/* {imageUri ? (
                 <Image 
                     source={{ uri: imageUri }} 
                     style={styles.image} 
                 />
-            ) : null}
+            ) : null} */}
 
             <Button 
                 title="Sauvegarder" 

@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native-web';
+import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import { MAP_API_KEY } from '../../utils/constants';
+import { firebaseDb } from '../../firebase';
 
 const MapScreen = () => {
     const mapRef = useRef(null);
     const navigation = useNavigation();
-
     const [region, setRegion] = useState(null);
-    const [addresses, setAddresses] = useState([
-        { name: 'Chez Clara', address: '30 rue du Victor Hugo, Meyzieu', image: "image1.jpg" },
-        { name: 'Chez Claire', address: '38 rue de la République, Meyzieu', image: "image2.jpg" },
-    ]);
+    const [addresses, setAddresses] = useState([]);
 
     const [markers, setMarkers] = useState([]);
 
@@ -51,7 +48,7 @@ const MapScreen = () => {
                     longitude: coords.lng,
                     title: item.name,
                     description: item.address,
-                    image: item.image
+                    // image: item.image
                 }]);
             } else {
                 console.error(`Géocodage échoué pour ${item.address}`);

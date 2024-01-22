@@ -4,6 +4,6 @@ export type FirebaseDefaultAddress = {
     address: string;
     isPrivate: boolean | null;
     userId: string | null;
-    imageUri: string | null;
+    // imageUri: string | null;
 }
     
