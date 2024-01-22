@@ -3,9 +3,9 @@ import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'rea
 import * as Location from 'expo-location';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
+import { MAP_API_KEY } from '../../utils/constants';
 
 const MapScreen = () => {
-    const apiKey = process.env.API_KEY;
     const mapRef = useRef(null);
     const navigation = useNavigation();
 
@@ -61,7 +61,7 @@ const MapScreen = () => {
 
     const getCoordinatesFromAddress = async (address) => {
         try {
-            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`);
+            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${MAP_API_KEY}`);
             const data = await response.json();
 
             if (data.status === 'OK' && data.results.length > 0) {
