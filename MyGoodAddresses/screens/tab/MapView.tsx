@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native-web';
 import * as Location from 'expo-location';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,7 @@ const MapScreen = () => {
         { name: 'Chez Clara', address: '30 rue du Victor Hugo, Meyzieu', image: "image1.jpg" },
         { name: 'Chez Claire', address: '38 rue de la République, Meyzieu', image: "image2.jpg" },
     ]);
-    
+
     const [markers, setMarkers] = useState([]);
 
     const goToInitialLocation = () => {
@@ -109,7 +109,7 @@ const MapScreen = () => {
             <TouchableOpacity style={styles.buttonRencentrer} onPress={goToInitialLocation}>
                 <Text>Recentrer</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('createAddress')}>
+            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('addAddress')}>
                 <Text style={styles.addButtonText}>+</Text>
             </TouchableOpacity>
         </View>

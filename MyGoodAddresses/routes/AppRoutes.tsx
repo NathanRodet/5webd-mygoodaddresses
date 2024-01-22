@@ -11,6 +11,7 @@ import AvatarSelection from "../screens/settings/AvatarSelection";
 import MapView from "../screens/tab/MapView";
 import AddAddressScreen from "../screens/tab/AddAddressScreen";
 
+
 export default function AppRoutes() {
 
   // Create a StackNavigator object.
@@ -26,6 +27,7 @@ export default function AppRoutes() {
           <Stack.Navigator initialRouteName={"MesBonnesAddresses"} screenOptions={loggedScreenOptions}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="map" component={MapView} />
+            <Stack.Screen name="addAddress" component={AddAddressScreen} />
             <Stack.Screen name="MenuSettings" component={MenuSettings} />
             <Stack.Screen name="AvatarSelection" component={AvatarSelection} />
           </Stack.Navigator>
