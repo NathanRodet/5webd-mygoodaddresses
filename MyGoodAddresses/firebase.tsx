@@ -4,6 +4,7 @@ import fireBaseConfig from "./firebase.config.json"
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DB_URL } from "./utils/constants";
 
 // Type for the configuration object
 type FirebaseConfigType = {
@@ -27,4 +28,4 @@ export const firebaseAuth = initializeAuth(firebaseApp,
 }
 );
 // Initialize Firebase database (Realtime Database)
-export const firebaseDb = getDatabase(firebaseApp);
+export const firebaseDb = getDatabase(firebaseApp, DB_URL);

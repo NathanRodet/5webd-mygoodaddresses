@@ -9,6 +9,9 @@ import Home from "../screens/tab/Home";
 import CreateAddress from "../screens/tab/CreateAddress";
 import MenuSettings from "../screens/settings/MenuSettings";
 import AvatarSelection from "../screens/settings/AvatarSelection";
+import MapView from "../screens/tab/MapView";
+import AddAddressScreen from "../screens/tab/AddAddressScreen";
+
 
 export default function AppRoutes() {
 
@@ -25,6 +28,7 @@ export default function AppRoutes() {
           <Stack.Navigator initialRouteName={"MesBonnesAddresses"} screenOptions={loggedScreenOptions}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="CreateAddress" component={CreateAddress} />
+            <Stack.Screen name="addAddress" component={AddAddressScreen} />
             <Stack.Screen name="MenuSettings" component={MenuSettings} />
             <Stack.Screen name="AvatarSelection" component={AvatarSelection} />
           </Stack.Navigator>
