@@ -21,8 +21,6 @@ const Home = () => {
     <View style={styles.container}>
       <Text style={styles.title}>{randomGreeting()}</Text>
       <Text style={styles.subtitle}>{currentUser?.email}</Text>
-      <Text style={styles.subtitle}>This is a random landing page!</Text>
-      <Button title="Get Started" onPress={() => console.log('Button pressed!')} />
       <Button title="Go to Map" onPress={navigateToMap} />
     </View>
   );
