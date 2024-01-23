@@ -1,24 +1,64 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import { MAP_API_KEY } from '../../utils/constants';
 import { firebaseDb } from '../../firebase';
+import { equalTo, get, orderByChild, query, ref } from 'firebase/database';
+import { AuthContext } from '../../auth/AuthProvider';
 
 const MapScreen = () => {
     const mapRef = useRef(null);
     const navigation = useNavigation();
     const [region, setRegion] = useState(null);
     const [addresses, setAddresses] = useState([]);
-
+    const user = useContext(AuthContext);
     const [markers, setMarkers] = useState([]);
+    const [showUserAddressesOnly, setShowUserAddressesOnly] = useState(false);
 
     const goToInitialLocation = () => {
         if (region && mapRef.current) {
             mapRef.current.animateToRegion(region, 1000);
         }
     };
+
+    const showMyAddresses = () => {
+        setShowUserAddressesOnly(true);
+        const userAddresses = addresses.filter(address => address.userId === user?.uid);
+        updateMarkers(userAddresses);
+    };
+
+    const updateMarkers = (addressesToDisplay) => {
+        setMarkers([]); 
+        geocodeAddresses(addressesToDisplay);
+    };
+
+    const zoomIn = () => {
+        if (region) {
+          const newRegion = {
+            ...region,
+            latitudeDelta: region.latitudeDelta / 2,
+            longitudeDelta: region.longitudeDelta / 2,
+          };
+          mapRef.current.animateToRegion(newRegion, 200);
+          setRegion(newRegion); // Mise à jour de l'état de la région
+        }
+      };
+      
+      // Fonction pour dézoomer la carte
+      const zoomOut = () => {
+        if (region) {
+          const newRegion = {
+            ...region,
+            latitudeDelta: region.latitudeDelta * 2,
+            longitudeDelta: region.longitudeDelta * 2,
+          };
+          mapRef.current.animateToRegion(newRegion, 200);
+          setRegion(newRegion); // Mise à jour de l'état de la région
+        }
+      };
+
 
     useEffect(() => {
         (async () => {
@@ -35,11 +75,32 @@ const MapScreen = () => {
                 longitudeDelta: 0.005,
             });
 
-            geocodeAddresses();
+            // geocodeAddresses();
         })();
     }, []);
 
-    const geocodeAddresses = async () => {
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            try {
+                const addressesRef = ref(firebaseDb, 'addresses');
+                const snapshot = await get(addressesRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const fetchedAddresses = Object.keys(data).map(key => ({ id: key, ...data[key] }))
+                        .filter(address => address.isPrivate === false || address.userId === user?.uid);
+                    setAddresses(fetchedAddresses);
+                } else {
+                    console.log("Aucune adresse trouvée");
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération des adresses:', error);
+            }
+        };
+
+        fetchAddresses();
+    }, [user]);
+
+    const geocodeAddresses = async (addressesToGeocode) => {
         for (const item of addresses) {
             const coords = await getCoordinatesFromAddress(item.address);
             if (coords) {
@@ -107,9 +168,23 @@ const MapScreen = () => {
                 <Text>Recentrer</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('addAddress')}>
-                <Text style={styles.addButtonText}>+</Text>
+                <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+                style={styles.myAddressesButton} 
+                onPress={showMyAddresses}
+            >
+                <Text style={styles.myAddressesButtonText}>Voir mes adresses sur la carte</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
+                    <Text style={styles.zoomText}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
+                    <Text style={styles.zoomText}>-</Text>
+                </TouchableOpacity>
         </View>
+        
     );
 };
 
@@ -165,8 +240,44 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
     },
     addButtonText: {
+        fontSize: 15,
+        color: 'black',
+    },
+    myAddressesButton: {
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 20,
+        elevation: 5,
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+    },
+    myAddressesButtonText: {
+        fontSize: 16,
+        color: 'black',
+    },
+    zoomContainer: {
+        position: 'absolute',
+        right: 20,
+        bottom: 100, // Ajustez la position en fonction de vos besoins
+    },
+    zoomButton: {
+        backgroundColor: 'white',
+        padding: 5,
+        borderRadius: 20,
+        elevation: 5,
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+        marginBottom: 1, // Espace entre les boutons
+    },
+    zoomText: {
         fontSize: 24,
         color: 'black',
+        textAlign: 'center',
     },
 });
 
