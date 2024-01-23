@@ -22,9 +22,9 @@ const firebaseConfig: FirebaseConfigType = fireBaseConfig as FirebaseConfigType;
 export const firebaseApp = initializeApp(firebaseConfig);
 // Initialize Firebase authentication
 export const firebaseAuth = initializeAuth(firebaseApp,
-//    {
-//   persistence: getReactNativePersistence(AsyncStorage)
-// }
+   {
+  persistence: getReactNativePersistence(AsyncStorage)
+}
 );
 // Initialize Firebase database (Realtime Database)
 export const firebaseDb = getDatabase(firebaseApp);

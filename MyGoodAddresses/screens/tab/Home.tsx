@@ -39,7 +39,7 @@ const Home = () => {
     </TouchableOpacity>
   );
   return (
-    <div style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -49,7 +49,7 @@ const Home = () => {
       <Button title="Ajouter une adresse" onPress={() => navigation.navigate('CreateAddress')} />
         {/* @ts-ignore */}
       <Button title="Ouvrir la carte" onPress={() => navigation.navigate('map')} />
-    </div>
+    </View>
   );
 }
 const styles = StyleSheet.create({
