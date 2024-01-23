@@ -7,12 +7,12 @@ import { push, ref, set } from 'firebase/database';
 import { AuthContext } from '../../auth/AuthProvider';
 
 const AddAddressScreen = () => {
-    
+
     const [addressName, setAddressName] = useState('');
     const [address, setAddress] = useState('');
     const [imageUri, setImageUri] = useState('');
     const [isPrivate, setIsPrivate] = useState(true);
-
+    const user = useContext(AuthContext)
     const handleChooseImage = async () => {
         // let permissionResult;
 
@@ -35,14 +35,14 @@ const AddAddressScreen = () => {
         // }
     };
 
-    const handleSave = async () => {
+    const saveAddress = async () => {
 
-        const user = useContext(AuthContext)
+
         if (!user) {
             console.log('Aucun utilisateur connecté');
             return;
         }
-        
+
         try {
             const newAddressRef = push(ref(firebaseDb, 'addresses'));
 
@@ -65,17 +65,17 @@ const AddAddressScreen = () => {
     return (
         <View style={styles.container}>
             <Text>Nom :</Text>
-            <TextInput 
-                value={addressName} 
-                onChangeText={setAddressName} 
-                style={styles.input} 
+            <TextInput
+                value={addressName}
+                onChangeText={setAddressName}
+                style={styles.input}
             />
 
             <Text>Adresse :</Text>
-            <TextInput 
-                value={address} 
-                onChangeText={setAddress} 
-                style={styles.input} 
+            <TextInput
+                value={address}
+                onChangeText={setAddress}
+                style={styles.input}
             />
 
             {/* <Button 
@@ -90,9 +90,9 @@ const AddAddressScreen = () => {
                 />
             ) : null} */}
 
-            <Button 
-                title="Sauvegarder" 
-                onPress={handleSave} 
+            <Button
+                title="Sauvegarder"
+                onPress={saveAddress}
             />
         </View>
     );
