@@ -1,9 +1,10 @@
 export type Address = {
-    id: string;
-    city: string;
-    road: string;
+    uid: string;
+    address: string;
+    addressName: string;
     isPrivate: boolean;
     description: string;
-    name: string;
+    userId: string;
     //Picture 
   }
+
