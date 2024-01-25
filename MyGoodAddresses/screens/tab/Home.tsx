@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
 import { ref, get } from "firebase/database";
@@ -13,26 +13,29 @@ const Home = () => {
   const [data, setData] = useState<Address[]>([]);
   const userId = currentUser?.uid;
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const addressesRef = ref(firebaseDb, 'addresses');
-        const snapshot = await get(addressesRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const fetchedAddresses = Object.keys(data).map(key => ({ id: key, ...data[key] }))
-            .filter(address => address.userId === userId);
-          setData(fetchedAddresses);
-        } else {
-          alert("Aucune adresse trouvée");
-        }
-      } catch (error) {
-        alert('Erreur lors de la récupération des adresses:' + error);
+  const fetchAddresses = async () => {
+    try {
+      const addressesRef = ref(firebaseDb, 'addresses');
+      const snapshot = await get(addressesRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const fetchedAddresses = Object.keys(data).map(key => ({ id: key, ...data[key] }))
+          .filter(address => address.userId === userId);
+        setData(fetchedAddresses);
+      } else {
+        alert("Aucune adresse trouvée");
       }
-    };
+    } catch (error) {
+      alert('Erreur lors de la récupération des adresses:' + error);
+    }
+  };
 
-    fetchAddresses();
-  }, [userId]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddresses();
+      return () => { };
+    }, [userId])
+  );
 
   const renderItem = ({ item }: { item: Address }) => (
     <TouchableOpacity
@@ -42,6 +45,8 @@ const Home = () => {
     >
       <Text style={styles.itemName}>{item.addressName}</Text>
       <Text style={styles.itemDescription}>{item.description}</Text>
+      <Text style={styles.itemDescription}>{item.address}</Text>
+
     </TouchableOpacity>
   );
   return (
@@ -65,15 +70,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+
   itemContainer: {
     padding: 10,
     borderBottomWidth: 1,
-    width: '100%',
     borderBottomColor: '#ddd',
   },
   itemName: {
