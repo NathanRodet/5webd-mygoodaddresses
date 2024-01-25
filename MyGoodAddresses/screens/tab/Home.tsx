@@ -56,6 +56,7 @@ const Home = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
       />
+
     </View>
   );
 }

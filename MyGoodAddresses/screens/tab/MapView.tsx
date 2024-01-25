@@ -34,30 +34,29 @@ const MapScreen = () => {
         geocodeAddresses(addressesToDisplay);
     };
 
-    const zoomIn = () => {
-        if (region) {
-          const newRegion = {
-            ...region,
-            latitudeDelta: region.latitudeDelta / 2,
-            longitudeDelta: region.longitudeDelta / 2,
-          };
-          mapRef.current.animateToRegion(newRegion, 200);
-          setRegion(newRegion); // Mise à jour de l'état de la région
-        }
-      };
+    // const zoomIn = () => {
+    //     if (region) {
+    //       const newRegion = {
+    //         ...region,
+    //         latitudeDelta: region.latitudeDelta / 2,
+    //         longitudeDelta: region.longitudeDelta / 2,
+    //       };
+    //       mapRef.current.animateToRegion(newRegion, 200);
+    //       setRegion(newRegion);
+    //     }
+    //   };
       
-      // Fonction pour dézoomer la carte
-      const zoomOut = () => {
-        if (region) {
-          const newRegion = {
-            ...region,
-            latitudeDelta: region.latitudeDelta * 2,
-            longitudeDelta: region.longitudeDelta * 2,
-          };
-          mapRef.current.animateToRegion(newRegion, 200);
-          setRegion(newRegion); // Mise à jour de l'état de la région
-        }
-      };
+    //   const zoomOut = () => {
+    //     if (region) {
+    //       const newRegion = {
+    //         ...region,
+    //         latitudeDelta: region.latitudeDelta * 2,
+    //         longitudeDelta: region.longitudeDelta * 2,
+    //       };
+    //       mapRef.current.animateToRegion(newRegion, 200);
+    //       setRegion(newRegion);
+    //     }
+    //   };
 
 
     useEffect(() => {
@@ -74,8 +73,6 @@ const MapScreen = () => {
                 latitudeDelta: 0.005,
                 longitudeDelta: 0.005,
             });
-
-            // geocodeAddresses();
         })();
     }, []);
 
@@ -168,7 +165,7 @@ const MapScreen = () => {
                 <Text>Recentrer</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('addAddress')}>
-                <Text style={styles.addButtonText}>Add</Text>
+                <Text style={styles.addButtonText}>Ajouter</Text>
             </TouchableOpacity>
             <TouchableOpacity 
                 style={styles.myAddressesButton} 
@@ -177,12 +174,12 @@ const MapScreen = () => {
                 <Text style={styles.myAddressesButtonText}>Voir mes adresses sur la carte</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
+            {/* <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
                     <Text style={styles.zoomText}>+</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
                     <Text style={styles.zoomText}>-</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
         </View>
         
     );
@@ -259,26 +256,26 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
     },
-    zoomContainer: {
-        position: 'absolute',
-        right: 20,
-        bottom: 100, // Ajustez la position en fonction de vos besoins
-    },
-    zoomButton: {
-        backgroundColor: 'white',
-        padding: 5,
-        borderRadius: 20,
-        elevation: 5,
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        shadowOffset: { width: 0, height: 2 },
-        marginBottom: 1, // Espace entre les boutons
-    },
-    zoomText: {
-        fontSize: 24,
-        color: 'black',
-        textAlign: 'center',
-    },
+    // zoomContainer: {
+    //     position: 'absolute',
+    //     right: 20,
+    //     bottom: 100, 
+    // },
+    // zoomButton: {
+    //     backgroundColor: 'white',
+    //     padding: 5,
+    //     borderRadius: 20,
+    //     elevation: 5,
+    //     shadowOpacity: 0.2,
+    //     shadowRadius: 5,
+    //     shadowOffset: { width: 0, height: 2 },
+    //     marginBottom: 1,
+    // },
+    // zoomText: {
+    //     fontSize: 24,
+    //     color: 'black',
+    //     textAlign: 'center',
+    // },
 });
 
 export default MapScreen;
