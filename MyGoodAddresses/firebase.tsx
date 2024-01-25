@@ -22,8 +22,10 @@ const firebaseConfig: FirebaseConfigType = fireBaseConfig as FirebaseConfigType;
 // Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
 // Initialize Firebase authentication
-export const firebaseAuth = initializeAuth(firebaseApp, {
+export const firebaseAuth = initializeAuth(firebaseApp,
+   {
   persistence: getReactNativePersistence(AsyncStorage)
-});
+}
+);
 // Initialize Firebase database (Realtime Database)
 export const firebaseDb = getDatabase(firebaseApp, 'https://webd-cours-default-rtdb.europe-west1.firebasedatabase.app');

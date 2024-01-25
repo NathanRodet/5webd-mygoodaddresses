@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet, Platform, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, Platform, Alert, Switch } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { firebaseDb } from '../../firebase';
@@ -10,6 +10,8 @@ const AddAddressScreen = () => {
 
     const [addressName, setAddressName] = useState('');
     const [address, setAddress] = useState('');
+    const [description, setDescription] = useState('');
+
     const [imageUri, setImageUri] = useState('');
     const [isPrivate, setIsPrivate] = useState(true);
     const user = useContext(AuthContext)
@@ -36,13 +38,10 @@ const AddAddressScreen = () => {
     };
 
     const saveAddress = async () => {
-
-
         if (!user) {
             console.log('Aucun utilisateur connecté');
             return;
         }
-
         try {
             const newAddressRef = push(ref(firebaseDb, 'addresses'));
 
@@ -51,14 +50,16 @@ const AddAddressScreen = () => {
                 addressName: addressName,
                 address: address,
                 isPrivate: isPrivate,
+                description: description,
+
                 userId: user.uid,
                 // image: imageUri
             };
 
             await set(newAddressRef, newAddress);
-            console.log('Adresse sauvegardée avec succès:', newAddress);
+            alert("Addresse ajoutée avec succès");
         } catch (error) {
-            console.error('Erreur lors de la sauvegarde de l\'adresse:', error);
+            alert("Impossible de créeer l'addresse : " + error);
         }
     };
 
@@ -77,7 +78,16 @@ const AddAddressScreen = () => {
                 onChangeText={setAddress}
                 style={styles.input}
             />
-
+            <Text>Description :</Text>
+            <TextInput
+                value={description}
+                onChangeText={setDescription}
+                style={styles.input}
+            />
+            <View>
+                <Text>Privée:</Text>
+                <Switch value={isPrivate} onValueChange={setIsPrivate} />
+            </View>
             {/* <Button 
                 title="Choisir une image" 
                 onPress={handleChooseImage} 

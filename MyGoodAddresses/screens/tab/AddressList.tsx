@@ -7,7 +7,7 @@ import { ref, get } from "firebase/database";
 import { Address } from "../../models/adresses"
 
 
-const Home = () => {
+const AddressList = () => {
   const navigation = useNavigation();
   const currentUser = useContext(AuthContext);
   const [data, setData] = useState<Address[]>([]);
@@ -21,8 +21,9 @@ const Home = () => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           const fetchedAddresses = Object.keys(data).map(key => ({ id: key, ...data[key] }))
-            .filter(address => address.userId === userId);
+            .filter(address => address.isPrivate === false);
           setData(fetchedAddresses);
+
         } else {
           alert("Aucune adresse trouvée");
         }
@@ -48,17 +49,19 @@ const Home = () => {
     <View style={styles.container}>
       <FlatList
         data={data}
+        numColumns={4}
+        horizontal={false}
+        contentContainerStyle={{ alignItems: "stretch" }}
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
       />
-
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
+    width: '100%', 
     justifyContent: 'center',
   },
   title: {
@@ -86,4 +89,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+
+export default AddressList;
