@@ -57,6 +57,7 @@ const AddAddressScreen = () => {
             };
 
             await set(newAddressRef, newAddress);
+           
             alert("Addresse ajoutée avec succès");
         } catch (error) {
             alert("Impossible de créeer l'addresse : " + error);

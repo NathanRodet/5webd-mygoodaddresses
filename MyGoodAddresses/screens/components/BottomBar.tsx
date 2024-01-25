@@ -17,11 +17,11 @@ const TabNavigator = () => {
 
           if (route.name === 'Accueil') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Ajouter une addresse') {
+          } else if (route.name === 'Ajouter') {
             iconName = focused ? 'plus-box' : 'plus-box-outline';
           } else if (route.name === 'Carte') {
             iconName = focused ? 'map' : 'map-outline';
-          } else if (route.name === 'Liste des addresses') {
+          } else if (route.name === 'Liste') {
             iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
           }
 
@@ -31,8 +31,8 @@ const TabNavigator = () => {
    
     >
       <Tab.Screen name="Accueil" component={Home} />
-      <Tab.Screen name="Ajouter une addresse" component={AddAddress} />
-      <Tab.Screen name="Liste des addresses" component={AddressList} />
+      <Tab.Screen name="Ajouter" component={AddAddress} />
+      <Tab.Screen name="Liste" component={AddressList} />
       <Tab.Screen name="Carte" component={MapView} />
     </Tab.Navigator>
   );

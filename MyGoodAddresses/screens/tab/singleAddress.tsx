@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button, Alert } from 'react-native';
+import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
@@ -45,24 +45,23 @@ const SingleAddress = () => {
 
     const renderItem = ({ item }: { item: Address }) => (
         <View style={styles.itemContainer}>
-            <View
-                //@ts-ignore
-                onPress={() => navigation.navigate('Map', { id: item.id })}
-                style={styles.itemContent}
-            >
-                <Text style={styles.itemName}>{item.addressName}</Text>
-                <Text style={styles.itemDescription}>{item.description}</Text>
-            </View>
+            <Text style={styles.itemName}>{item.addressName}</Text>
+            <Text style={styles.itemDescription}>{item.address}</Text>
+            <Text style={styles.itemDescription}>{item.description}</Text>
+            <View style={styles.horizontalLine} />
+            <Text>Avis</Text>
+            <CommentsList addressId={addressId} />
 
         </View>
+        
     );
     async function removeAddress() {
         const db = firebaseDb;
         try {
             remove(ref(db, 'addresses/' + addressId));
-            alert("Addresse supprimée avec succès");
+            Alert.alert('', 'Addresse supprimée avec succès ');
             //@ts-ignore
-            navigation.navigate('Home');
+            navigation.navigate('Main');
 
         } catch (error) {
             alert("Impossible de " + error);
@@ -85,19 +84,17 @@ const SingleAddress = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={confirmRemove}
-                style={styles.trashIcon}
-            >
-                <Icon name="trash-can-outline" size={24} color="black" />
-            </TouchableOpacity>
+            <View style={styles.iconContainer}>
+                <TouchableOpacity onPress={confirmRemove} style={styles.trashIcon}>
+                    <Icon name="trash-can-outline" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.uid}
+                ListFooterComponent={<AddComment addressId={addressId} />}
             />
-            <AddComment addressId={addressId} />
-            <CommentsList addressId={addressId} />
         </View>
 
     );
@@ -106,21 +103,28 @@ const styles = StyleSheet.create({
     container: {
         display: "flex",
         flex: 1,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '100%'
+    },
+    horizontalLine: {
+        borderBottomColor: 'black', 
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        alignSelf: 'stretch',
+        marginVertical: 10,
     },
     itemContainer: {
-        flexDirection: 'row', // Align items horizontally
-        justifyContent: 'space-between', // Space between item content and trash icon
-        alignItems: 'center', // Center items vertically
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 10,
-        borderBottomWidth: 1,
         width: '100%',
-        borderBottomColor: '#ddd',
     },
     itemContent: {
-        flex: 1, // Take up as much space as possible before the icon
+        flex: 1,
+    },
+    iconContainer: {
+        width: '100%',
+        justifyContent: 'flex-end',
+        paddingHorizontal: 10,
+        flexDirection: 'row',
     },
     itemName: {
         fontSize: 18,
@@ -131,7 +135,8 @@ const styles = StyleSheet.create({
         color: 'gray',
     },
     trashIcon: {
-        padding: 10, // Make it easier to tap
+        padding: 10,
+        marginLeft: 0
     },
 });
 
