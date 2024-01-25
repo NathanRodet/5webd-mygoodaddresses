@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
-import { getDatabase, ref, child, get } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { Address } from "../../models/adresses"
 
 
@@ -12,7 +12,6 @@ const Home = () => {
   const currentUser = useContext(AuthContext);
   const [data, setData] = useState<Address[]>([]);
   const userId = currentUser?.uid;
-  const dbRef = ref(getDatabase());
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -57,10 +56,8 @@ const Home = () => {
 }
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     flex: 1,
     width: '100%',
-    alignItems: 'center',
     justifyContent: 'center',
   },
   title: {

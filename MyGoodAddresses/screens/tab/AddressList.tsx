@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
-import { getDatabase, ref, child, get } from "firebase/database";
+import { ref, get } from "firebase/database";
 import { Address } from "../../models/adresses"
 
 
@@ -12,7 +12,6 @@ const AddressList = () => {
   const currentUser = useContext(AuthContext);
   const [data, setData] = useState<Address[]>([]);
   const userId = currentUser?.uid;
-  const dbRef = ref(getDatabase());
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -50,6 +49,9 @@ const AddressList = () => {
     <View style={styles.container}>
       <FlatList
         data={data}
+        numColumns={4}
+        horizontal={false}
+        contentContainerStyle={{ alignItems: "stretch" }}
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
       />
@@ -58,10 +60,8 @@ const AddressList = () => {
 }
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     flex: 1,
-    width: '100%',
-    alignItems: 'center',
+    width: '100%', 
     justifyContent: 'center',
   },
   title: {
@@ -88,5 +88,6 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
+
 
 export default AddressList;

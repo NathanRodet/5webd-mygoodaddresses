@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Import the Icon component
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import Home from "../tab/Home";
 import AddAddress from "../tab/AddAddressScreen";
 import MapView from "../tab/MapView";
@@ -26,14 +25,10 @@ const TabNavigator = () => {
             iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
           }
 
-          // You can return any component that you like here!
           return <Icon name={iconName} size={size} color={color} />;
         },
       })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'gray',
-      }}
+   
     >
       <Tab.Screen name="Accueil" component={Home} />
       <Tab.Screen name="Ajouter une addresse" component={AddAddress} />

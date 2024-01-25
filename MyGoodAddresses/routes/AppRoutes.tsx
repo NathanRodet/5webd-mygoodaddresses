@@ -6,7 +6,6 @@
   import Register from '../screens/Register';
   import { AuthContext } from "../auth/AuthProvider";
   import Home from "../screens/tab/Home";
-  import CreateAddress from "../screens/tab/CreateAddress";
   import MenuSettings from "../screens/settings/MenuSettings";
   import AvatarSelection from "../screens/settings/AvatarSelection";
   import MapView from "../screens/tab/MapView";
@@ -28,7 +27,6 @@
             <Stack.Navigator initialRouteName={"Main"} screenOptions={loggedScreenOptions}>
               <Stack.Screen name="Home" component={Home} />
               <Stack.Screen name="Main" component={TabNavigator} /> 
-              <Stack.Screen name="CreateAddress" component={CreateAddress} />
               <Stack.Screen name="addAddress" component={AddAddressScreen} />
               <Stack.Screen name="map" component={MapView} />
               <Stack.Screen name="singleAddress" component={singleAddress} />

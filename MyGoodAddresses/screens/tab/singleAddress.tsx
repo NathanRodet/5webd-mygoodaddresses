@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
-import { getDatabase, ref, child, get } from "firebase/database";
+import { ref, get, remove } from "firebase/database";
 import { Address } from "../../models/adresses"
 import { RouteProp } from '@react-navigation/native';
 import AddComment from '../components/addComment';
 import CommentsList from '../components/CommentList';
 import { useRoute } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 interface RouteParams {
     addressId: string;
 }
@@ -19,7 +21,6 @@ const SingleAddress = () => {
     const currentUser = useContext(AuthContext);
     const [data, setData] = useState<Address[]>([]);
     const userId = currentUser?.uid;
-    const dbRef = ref(getDatabase());
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -43,17 +44,53 @@ const SingleAddress = () => {
     }, [userId]);
 
     const renderItem = ({ item }: { item: Address }) => (
-        <TouchableOpacity
-            //@ts-ignore
-            onPress={() => navigation.navigate('Map', { id: item.id })}
-            style={styles.itemContainer}
-        >
-            <Text style={styles.itemName}>{item.addressName}</Text>
-            <Text style={styles.itemDescription}>{item.description}</Text>
-        </TouchableOpacity>
+        <View style={styles.itemContainer}>
+            <View
+                //@ts-ignore
+                onPress={() => navigation.navigate('Map', { id: item.id })}
+                style={styles.itemContent}
+            >
+                <Text style={styles.itemName}>{item.addressName}</Text>
+                <Text style={styles.itemDescription}>{item.description}</Text>
+            </View>
+
+        </View>
     );
+    async function removeAddress() {
+        const db = firebaseDb;
+        try {
+            remove(ref(db, 'addresses/' + addressId));
+            alert("Addresse supprimée avec succès");
+            //@ts-ignore
+            navigation.navigate('Home');
+
+        } catch (error) {
+            alert("Impossible de " + error);
+        }
+    }
+    function confirmRemove() {
+        Alert.alert('Attention', 'Etes-vous sur de vouloir supprimer cette addresse ?', [
+            {
+                text: 'Supprimer',
+                onPress: removeAddress,
+            },
+            {
+                text: 'Annuler',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+        ]);
+    }
+
+
     return (
         <View style={styles.container}>
+            <TouchableOpacity
+                onPress={confirmRemove}
+                style={styles.trashIcon}
+            >
+                <Icon name="trash-can-outline" size={24} color="black" />
+            </TouchableOpacity>
             <FlatList
                 data={data}
                 renderItem={renderItem}
@@ -73,20 +110,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    separator: {
-        marginVertical: 30,
-        height: 1,
-        width: '80%',
-    },
     itemContainer: {
+        flexDirection: 'row', // Align items horizontally
+        justifyContent: 'space-between', // Space between item content and trash icon
+        alignItems: 'center', // Center items vertically
         padding: 10,
         borderBottomWidth: 1,
         width: '100%',
         borderBottomColor: '#ddd',
+    },
+    itemContent: {
+        flex: 1, // Take up as much space as possible before the icon
     },
     itemName: {
         fontSize: 18,
@@ -96,6 +130,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'gray',
     },
+    trashIcon: {
+        padding: 10, // Make it easier to tap
+    },
 });
+
 
 export default SingleAddress;
