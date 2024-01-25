@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
-// import * as Location from 'expo-location';
+import * as Location from 'expo-location';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import { MAP_API_KEY } from '../../utils/constants';
 import { firebaseDb } from '../../firebase';
-import { equalTo, get, orderByChild, query, ref } from 'firebase/database';
+import { get, ref } from 'firebase/database';
 import { AuthContext } from '../../auth/AuthProvider';
 
 const MapScreen = () => {
@@ -30,34 +30,9 @@ const MapScreen = () => {
     };
 
     const updateMarkers = (addressesToDisplay) => {
-        setMarkers([]); 
+        setMarkers([]);
         geocodeAddresses(addressesToDisplay);
     };
-
-    // const zoomIn = () => {
-    //     if (region) {
-    //       const newRegion = {
-    //         ...region,
-    //         latitudeDelta: region.latitudeDelta / 2,
-    //         longitudeDelta: region.longitudeDelta / 2,
-    //       };
-    //       mapRef.current.animateToRegion(newRegion, 200);
-    //       setRegion(newRegion);
-    //     }
-    //   };
-      
-    //   const zoomOut = () => {
-    //     if (region) {
-    //       const newRegion = {
-    //         ...region,
-    //         latitudeDelta: region.latitudeDelta * 2,
-    //         longitudeDelta: region.longitudeDelta * 2,
-    //       };
-    //       mapRef.current.animateToRegion(newRegion, 200);
-    //       setRegion(newRegion);
-    //     }
-    //   };
-
 
     useEffect(() => {
         (async () => {
@@ -98,15 +73,15 @@ const MapScreen = () => {
     }, [user]);
 
     const geocodeAddresses = async (addressesToGeocode) => {
-        for (const item of addresses) {
+        for (const item of addresses || addressesToGeocode) {
             const coords = await getCoordinatesFromAddress(item.address);
             if (coords) {
                 setMarkers(prevMarkers => [...prevMarkers, {
                     latitude: coords.lat,
                     longitude: coords.lng,
-                    title: item.name,
+                    title: item.addressName,
                     description: item.address,
-                    // image: item.image
+                    image: item.imageUri
                 }]);
             } else {
                 console.error(`Géocodage échoué pour ${item.address}`);
@@ -145,21 +120,27 @@ const MapScreen = () => {
                 showsUserLocation={true}
                 followsUserLocation={true}
             >
-                {markers.map((marker, index) => (
+                {markers.map((marker) => (
                     <Marker
-                        key={index}
+                        key={`${marker.latitude}-${marker.longitude}`}
                         coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                         pinColor='red'
                     >
-                        <Callout tooltip>
+                        <Callout tooltip style={styles.calloutContainer}>
                             <View style={styles.calloutView}>
                                 <Text style={styles.calloutTitle}>{marker.title}</Text>
                                 <Text>{marker.description}</Text>
-                                {marker.image && <Image source={{ uri: marker.image }} style={styles.calloutImage} />}
+                                {marker.image && (
+                                    <Image
+                                        source={{ uri: marker.image }}
+                                        style={styles.calloutImage}
+                                    />
+                                )}
                             </View>
                         </Callout>
                     </Marker>
                 ))}
+
             </MapView>
             <TouchableOpacity style={styles.buttonRencentrer} onPress={goToInitialLocation}>
                 <Text>Recentrer</Text>
@@ -167,21 +148,14 @@ const MapScreen = () => {
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('addAddress')}>
                 <Text style={styles.addButtonText}>Ajouter</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.myAddressesButton} 
+            <TouchableOpacity
+                style={styles.myAddressesButton}
                 onPress={showMyAddresses}
             >
                 <Text style={styles.myAddressesButtonText}>Voir mes adresses sur la carte</Text>
             </TouchableOpacity>
-
-            {/* <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
-                    <Text style={styles.zoomText}>+</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
-                    <Text style={styles.zoomText}>-</Text>
-                </TouchableOpacity> */}
         </View>
-        
+
     );
 };
 
@@ -191,26 +165,29 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
+    calloutContainer: {
+        flexDirection: 'column',
+        alignSelf: 'flex-start',
+    },
     map: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
     },
     calloutView: {
-        flexDirection: 'column',
-        alignSelf: 'flex-start',
         backgroundColor: 'white',
         borderRadius: 6,
         padding: 10,
-        width: 150,
-        height: 100,
-    },
-    calloutImage: {
-        width: '100%',
-        height: 50,
-        resizeMode: 'cover',
+        width: 200, // Vous pouvez ajuster cette largeur
+        height: 'auto', // Hauteur auto pour s'adapter au contenu
     },
     calloutTitle: {
         fontWeight: 'bold',
+        marginBottom: 5, // Ajoute un peu d'espace sous le titre
+    },
+    calloutImage: {
+        width: 120, // Ajustez selon la taille souhaitée
+        height: 80, // Ajustez selon la taille souhaitée
+        resizeMode: 'cover', // Ajuste l'image pour couvrir l'espace disponible
     },
     buttonRencentrer: {
         position: 'absolute',
@@ -256,26 +233,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
     },
-    // zoomContainer: {
-    //     position: 'absolute',
-    //     right: 20,
-    //     bottom: 100, 
-    // },
-    // zoomButton: {
-    //     backgroundColor: 'white',
-    //     padding: 5,
-    //     borderRadius: 20,
-    //     elevation: 5,
-    //     shadowOpacity: 0.2,
-    //     shadowRadius: 5,
-    //     shadowOffset: { width: 0, height: 2 },
-    //     marginBottom: 1,
-    // },
-    // zoomText: {
-    //     fontSize: 24,
-    //     color: 'black',
-    //     textAlign: 'center',
-    // },
 });
 
 export default MapScreen;

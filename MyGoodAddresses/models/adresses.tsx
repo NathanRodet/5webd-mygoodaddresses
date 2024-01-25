@@ -5,6 +5,8 @@ export type Address = {
     isPrivate: boolean;
     description: string;
     userId: string;
-    //Picture 
+    imageUri: string | null;
   }
-
+export interface AddressListProps {
+  addressId: string;
+}

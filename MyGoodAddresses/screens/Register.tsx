@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native'; // Import the Text component
+import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { firebaseAuth } from '../firebase';
 
 async function firebaseRegister(email: string, password: string, navigation: any) {
   try {
     await createUserWithEmailAndPassword(firebaseAuth, email, password);
-    // Registration successful, navigate to the next screen
     console.log('User registered successfully!');
   } catch (error) {
     console.error('Error registering user:', error);
