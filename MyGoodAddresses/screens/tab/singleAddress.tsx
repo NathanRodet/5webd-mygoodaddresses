@@ -1,23 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button, Alert, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button, Alert, ScrollView, Image } from 'react-native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
 import { ref, get, remove } from "firebase/database";
-import { Address } from "../../models/adresses"
-import { RouteProp } from '@react-navigation/native';
+import { Address, AddressListProps } from "../../models/adresses"
 import AddComment from '../components/addComment';
 import CommentsList from '../components/CommentList';
-import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-interface RouteParams {
-    addressId: string;
-}
-const SingleAddress = () => {
-    const route = useRoute<RouteProp<{ params: RouteParams }, 'params'>>();
-    const { addressId } = route.params;
-    const navigation = useNavigation();
+
+const SingleAddress = ({ route, navigation }: { navigation: any, route: any }) => {
+    const { addressId }: AddressListProps = route.params;
     const currentUser = useContext(AuthContext);
     const [data, setData] = useState<Address[]>([]);
     const userId = currentUser?.uid;
@@ -29,13 +22,13 @@ const SingleAddress = () => {
                 const snapshot = await get(addressesRef);
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    const fetchedAddresses = Object.keys(data).map(key => ({ id: key, ...data[key] }))
+                    const fetchedAddresses = Object.keys(data).map(key => ({ uid: key, ...data[key] }))
                         .filter(address => address.uid === addressId);
                     setData(fetchedAddresses);
                 } else {
                     alert("Aucune adresse trouvée");
                 }
-            } catch (error) {
+            } catch (error) {   
                 alert('Erreur lors de la récupération des adresses:' + error);
             }
         };
@@ -48,13 +41,13 @@ const SingleAddress = () => {
             <Text style={styles.itemName}>{item.addressName}</Text>
             <Text style={styles.itemDescription}>{item.address}</Text>
             <Text style={styles.itemDescription}>{item.description}</Text>
+            {/* <Image source={{ uri: item.imageUri }} style={{ width: 200, height: 200 }} /> */}
             <View style={styles.horizontalLine} />
             <Text>Avis</Text>
             <CommentsList addressId={addressId} />
-
         </View>
-        
     );
+
     async function removeAddress() {
         const db = firebaseDb;
         try {
@@ -137,6 +130,12 @@ const styles = StyleSheet.create({
     trashIcon: {
         padding: 10,
         marginLeft: 0
+    },
+    image: {
+        width: 200,
+        height: 200,
+        resizeMode: 'cover',
+        marginVertical: 10,
     },
 });
 

@@ -1,11 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { StyleSheet, FlatList, Text, View, TouchableOpacity, Button } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, FlatList, Text, View, TouchableOpacity } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { firebaseDb } from '../../firebase';
 import { AuthContext } from '../../auth/AuthProvider';
 import { ref, get } from "firebase/database";
-import { Address } from "../../models/adresses"
-
+import { Address } from "../../models/adresses";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -33,22 +32,21 @@ const Home = () => {
   useFocusEffect(
     useCallback(() => {
       fetchAddresses();
-      return () => { };
     }, [userId])
   );
 
+  
   const renderItem = ({ item }: { item: Address }) => (
     <TouchableOpacity
-      //@ts-ignore
-      onPress={() => navigation.navigate('singleAddress', { addressId: item.uid })}
+      onPress={() => navigation.navigate('singleAddress', { addressId: item.id })}
       style={styles.itemContainer}
     >
       <Text style={styles.itemName}>{item.addressName}</Text>
       <Text style={styles.itemDescription}>{item.description}</Text>
       <Text style={styles.itemDescription}>{item.address}</Text>
-
     </TouchableOpacity>
   );
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -56,10 +54,9 @@ const Home = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.uid}
       />
-
     </View>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
